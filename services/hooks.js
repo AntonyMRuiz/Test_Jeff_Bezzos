@@ -1,20 +1,15 @@
 import { read } from "./fetch.js";
 import { URL_USERS } from "./route.js";
 
-(() => {
+(async () => {
 
     /* Obtenemos el ID usuario logeado, que debe esta en el LocalStorage */
     const userId = localStorage.getItem("userId");
 
     /* Verificamos que ese Id, si pertenezca a un usuario */
-    const userData = read(`${URL_USERS}/${userId}`)
-
-    /* Si no pertenece a ningun usuario, evitar el acceso a ruta privadas */
-    if (userData) {
-        alert("NO ESTAS LOGUEADO");
-        /* Lo redireccionamos al login */
-        window.location.href = "login.html"
-    } else {
+    try {
+        /* Esto puede fallar y si falla, es porque no encontro ese ID */
+        const userData = await read(`${URL_USERS}/${userId}`);
 
         /* Es la ruta, sin la ruta raiz, de donde se esta ejecutando */
         const path = window.location.pathname;
@@ -55,6 +50,12 @@ import { URL_USERS } from "./route.js";
                 window.location.href = "../index.html"
                 break;
         }
+
+    } catch (error) {
+        /* Si no pertenece a ningun usuario, evitar el acceso a ruta privadas */
+        alert("NO ESTAS LOGUEADO");
+        /* Lo redireccionamos al login */
+        window.location.href = "login.html"
     }
 
 }
